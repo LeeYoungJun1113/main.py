@@ -1,0 +1,37 @@
+import argparse # take the module 'argparse'
+import pathlib
+from train import *
+
+parser = argparse.ArgumentParser(description='Set Parameters') 
+# ArgumentParser에 원하는 description을 입력하여 parser 객체를 생성한다
+# add_argument 통해서 원하는 만큼 인자 종류 추가한다
+# So.. parse_args() 안에 아래의 인자들을 추가시킬 수 있다
+# -h, -help 인자에 대한 도움말을 설정할 수 있다
+# '--NAME' or '-NAME' 처럼 argument 이름을 지정한다, 이어서 쓰면 두 개 쓸 수 있다 such '--mode', '-m'
+# 기본적으로 parse_args()가 주어진 인자들을 파싱할 때는 모든 문자를 숫자 등이 아닌 문자열 취급한다. 따라서 데이터 타입을 지정하고 싶으면 add_argument()에서 type=을 지정해 주어야 한다. default는 말한 대로 str이다.
+
+parser.add_argument('--mode', choices=['train', 'test', 'FIN_EVAL'], default='train')
+parser.add_argument('--data_dir', default="./data/T1_T1CE_TRAIN.h5", help='Path to the dataset')
+parser.add_argument('--res_dir', default="./result", type=pathlib.Path,
+                    help='Path where model and results should be saved')
+parser.add_argument('--ckpt_dir', default="./checkpoint",type=pathlib.Path,
+                    help='Path to pre-trained model. Use with --mode test')
+parser.add_argument('--log_dir', default="./log", type=pathlib.Path, help='Path to the log')
+
+parser.add_argument('--num_epoch', type=int, default=50, help='Number of training epochs') # 
+parser.add_argument('--width', type=int, default=128, help='Width')
+parser.add_argument('--height', type=int, default=192, help='Height')
+parser.add_argument('--batch_size', default=1, type=int, help='Mini batch size')
+parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
+parser.add_argument('--cont', type=str, default="no", help='Option:Continue?') ## 1st = no..start
+parser.add_argument('--optim', type=str, default="Adam", help='Optimizer') 
+
+
+args = parser.parse_args() 
+# parse_args() 함수를 통해 인자를 args에 파싱한다
+# usage ; args.parameter 로 주어진 인자 값을 받아서 사용한다 
+# such as args.mode, args.num_epoch, or --mode, --num_epoch etc
+#? 학습 돌리는 코랩에서는 --num_epcoh 500 이렇게 지정되어있는데 혹시 args.mode(500) 가능한가요?
+
+if __name__ == "__main__":
+    train(args)
